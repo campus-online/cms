@@ -136,7 +136,8 @@ export const remarkToMarkdown = obj => {
   const markdown = unified()
     .use(remarkToMarkdownPlugin, remarkToMarkdownPluginOpts)
     .use(remarkAllowAllText)
-    .stringify(processedMdast);
+    .stringify(processedMdast)
+    .replace(/\r+/g, '');
 
   /**
    * Return markdown with trailing whitespace removed.
