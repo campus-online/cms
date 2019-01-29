@@ -1,34 +1,7 @@
 import matter from 'gray-matter';
-import tomlFormatter from './toml';
 import yamlFormatter from './yaml';
-import jsonFormatter from './json';
 
 const parsers = {
-  toml: {
-    parse: input => tomlFormatter.fromFile(input),
-    stringify: (metadata, { sortedKeys }) => tomlFormatter.toFile(metadata, sortedKeys),
-  },
-  json: {
-    parse: input => {
-      let JSONinput = input.trim();
-      // Fix JSON if leading and trailing brackets were trimmed.
-      if (JSONinput.substr(0, 1) !== '{') {
-        JSONinput = '{' + JSONinput;
-      }
-      if (JSONinput.substr(-1) !== '}') {
-        JSONinput = JSONinput + '}';
-      }
-      return jsonFormatter.fromFile(JSONinput);
-    },
-    stringify: (metadata, { sortedKeys }) => {
-      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
-      // Trim leading and trailing brackets.
-      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-1) === '}') {
-        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
-      }
-      return JSONoutput;
-    },
-  },
   yaml: {
     parse: input => yamlFormatter.fromFile(input),
     stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
@@ -44,10 +17,6 @@ function inferFrontmatterFormat(str) {
   switch (firstLine) {
     case '---':
       return getFormatOpts('yaml');
-    case '+++':
-      return getFormatOpts('toml');
-    case '{':
-      return getFormatOpts('json');
     default:
       throw 'Unrecognized front-matter format.';
   }
@@ -56,8 +25,6 @@ function inferFrontmatterFormat(str) {
 export const getFormatOpts = format =>
   ({
     yaml: { language: 'yaml', delimiters: '---' },
-    toml: { language: 'toml', delimiters: '+++' },
-    json: { language: 'json', delimiters: ['{', '}'] },
   }[format]);
 
 class FrontmatterFormatter {
@@ -90,5 +57,3 @@ class FrontmatterFormatter {
 
 export const FrontmatterInfer = new FrontmatterFormatter();
 export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
-export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
-export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);

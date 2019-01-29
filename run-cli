@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+yarn env-cmd production yarn --cwd packages/netlify-cms-widget-markdown build && node cli ~/Sites/campus-online-content/docs/
+# https://github.com/campus-online/content/pull/5

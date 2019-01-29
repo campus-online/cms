@@ -1,6 +1,7 @@
-import { trimEnd } from 'lodash';
+import { trimEnd, isFunction } from 'lodash';
 import unified from 'unified';
 import u from 'unist-builder';
+import { Map, Record, fromJS } from 'immutable';
 import markdownToRemarkPlugin from 'remark-parse';
 import remarkToMarkdownPlugin from 'remark-stringify';
 import remarkToRehype from 'remark-rehype';
@@ -20,7 +21,81 @@ import remarkEscapeMarkdownEntities from './remarkEscapeMarkdownEntities';
 import remarkStripTrailingBreaks from './remarkStripTrailingBreaks';
 import remarkAllowHtmlEntities from './remarkAllowHtmlEntities';
 import slateToRemark from './slateRemark';
-import { getEditorComponents } from '../MarkdownControl';
+import { frontmatterYAML } from '../../../netlify-cms-core/src/formats/frontmatter';
+
+const catchesNothing = /.^/;
+/* eslint-disable no-unused-vars */
+const EditorComponent = Record({
+  id: null,
+  label: 'unnamed component',
+  icon: 'exclamation-triangle',
+  fields: [],
+  pattern: catchesNothing,
+  fromBlock(match) {
+    return {};
+  },
+  toBlock(attributes) {
+    return 'Plugin';
+  },
+  toPreview(attributes) {
+    return 'Plugin';
+  },
+});
+/* eslint-enable */
+
+function createEditorComponent(config) {
+  const configObj = new EditorComponent({
+    id: config.id || config.label.replace(/[^A-Z0-9]+/gi, '_'),
+    label: config.label,
+    icon: config.icon,
+    fields: fromJS(config.fields),
+    pattern: config.pattern,
+    fromBlock: isFunction(config.fromBlock) ? config.fromBlock.bind(null) : null,
+    toBlock: isFunction(config.toBlock) ? config.toBlock.bind(null) : null,
+    toPreview: isFunction(config.toPreview)
+      ? config.toPreview.bind(null)
+      : config.toBlock.bind(null),
+  });
+
+  return configObj;
+}
+
+
+const image = createEditorComponent({
+  label: 'Image',
+  id: 'image',
+  fromBlock: match =>
+    match && {
+      image: match[2],
+      alt: match[1],
+      title: match[4],
+    },
+  toBlock: ({ alt, image, title }) =>
+    `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
+  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
+  fields: [
+    {
+      label: 'Image',
+      name: 'image',
+      widget: 'image',
+      media_library: {
+        allow_multiple: false,
+      },
+    },
+    {
+      label: 'Alt Text',
+      name: 'alt',
+    },
+    {
+      label: 'Title',
+      name: 'title',
+    },
+  ],
+});
+
+
+const editorComponents = new Map().set(image.get('id'), image)
+const getEditorComponents = () => editorComponents
 
 /**
  * This module contains all serializers for the Markdown widget.
@@ -59,7 +134,7 @@ import { getEditorComponents } from '../MarkdownControl';
 /**
  * Deserialize a Markdown string to an MDAST.
  */
-export const markdownToRemark = markdown => {
+const markdownToRemark = markdown => {
   /**
    * Parse the Markdown string input to an MDAST.
    */
@@ -94,7 +169,7 @@ function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
 /**
  * Serialize an MDAST to a Markdown string.
  */
-export const remarkToMarkdown = obj => {
+const remarkToMarkdown = obj => {
   /**
    * Rewrite the remark-stringify text visitor to simply return the text value,
    * without encoding or escaping any characters. This means we're completely
@@ -148,7 +223,7 @@ export const remarkToMarkdown = obj => {
 /**
  * Convert Markdown to HTML.
  */
-export const markdownToHtml = (markdown, getAsset) => {
+const markdownToHtml = (markdown, getAsset) => {
   const mdast = markdownToRemark(markdown);
 
   const hast = unified()
@@ -167,7 +242,7 @@ export const markdownToHtml = (markdown, getAsset) => {
  * Deserialize an HTML string to Slate's Raw AST. Currently used for HTML
  * pastes.
  */
-export const htmlToSlate = html => {
+const htmlToSlate = html => {
   const hast = unified()
     .use(htmlToRehype, { fragment: true })
     .parse(html);
@@ -192,7 +267,7 @@ export const htmlToSlate = html => {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export const markdownToSlate = markdown => {
+const markdownToSlate = markdown => {
   const mdast = markdownToRemark(markdown);
 
   const slateRaw = unified()
@@ -212,8 +287,27 @@ export const markdownToSlate = markdown => {
  * MDAST. The conversion is manual because Unified can only operate on Unist
  * trees.
  */
-export const slateToMarkdown = raw => {
+const slateToMarkdown = raw => {
   const mdast = slateToRemark(raw, { shortcodePlugins: getEditorComponents() });
   const markdown = remarkToMarkdown(mdast);
-  return markdown;
+  return markdown.replace(/\u2028+/g, '\n');
 };
+
+const fm = frontmatterYAML()
+const trim = string => (string || '').replace(/^\s+|\s+$/g, '')
+
+export default markdown => {
+  const data = fm.fromFile(markdown)
+  let body = trim(markdown.split('---').map(trim).filter(a => a)[1])
+  if(body){
+    try{
+      body = slateToMarkdown(markdownToSlate(body))
+      process.stdout.write(' [processed]')
+    }catch(e){
+      process.stdout.write(' [error]')
+    }
+  }else{
+    process.stdout.write(' [skip]')
+  }
+  return fm.toFile({ ...data, body }, Object.keys(data))
+}

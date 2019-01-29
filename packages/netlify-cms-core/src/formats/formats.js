@@ -1,28 +1,20 @@
 import { List } from 'immutable';
 import { get } from 'lodash';
 import yamlFormatter from './yaml';
-import tomlFormatter from './toml';
-import jsonFormatter from './json';
-import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import { FrontmatterInfer, frontmatterYAML } from './frontmatter';
 
-export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
+export const frontmatterFormats = ['yaml-frontmatter'];
 
 export const formatExtensions = {
   yml: 'yml',
   yaml: 'yml',
-  toml: 'toml',
-  json: 'json',
   frontmatter: 'md',
-  'json-frontmatter': 'md',
-  'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
 };
 
 export const extensionFormatters = {
   yml: yamlFormatter,
   yaml: yamlFormatter,
-  toml: tomlFormatter,
-  json: jsonFormatter,
   md: FrontmatterInfer,
   markdown: FrontmatterInfer,
   html: FrontmatterInfer,
@@ -32,11 +24,7 @@ const formatByName = (name, customDelimiter) =>
   ({
     yml: yamlFormatter,
     yaml: yamlFormatter,
-    toml: tomlFormatter,
-    json: jsonFormatter,
     frontmatter: FrontmatterInfer,
-    'json-frontmatter': frontmatterJSON(customDelimiter),
-    'toml-frontmatter': frontmatterTOML(customDelimiter),
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
   }[name]);
 
