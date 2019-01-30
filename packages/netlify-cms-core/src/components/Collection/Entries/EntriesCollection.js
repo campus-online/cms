@@ -68,7 +68,7 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   const entries = selectEntries(state, collection.get('name'));
-  const entriesLoaded = !!state.entries.getIn(['pages', collection.get('name')]);
+  const entriesLoaded = !!state.entries.getIn(['pages', collection.get('name'), 'isComplete']);
   const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
 
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));

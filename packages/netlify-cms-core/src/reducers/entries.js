@@ -57,6 +57,7 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action) => {
           ['pages', collection],
           Map({
             page,
+            isComplete: true,
             ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
           }),
         );

@@ -35,6 +35,7 @@ describe('entries', () => {
           pages: {
             posts: {
               page: 0,
+              isComplete: true,
               ids: ['a', 'b'],
             },
           },
