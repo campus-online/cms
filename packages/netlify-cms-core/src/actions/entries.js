@@ -12,6 +12,13 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
 
+const delay = (time = 0) => {
+  return new Promise(resolve => {
+    // new browser macro-task, syncronous state flushed
+    requestAnimationFrame(() => setTimeout(setTimeout, time, resolve));
+  });
+};
+
 /*
  * Contant Declarations
  */
@@ -220,7 +227,8 @@ export function changeDraftFieldValidation(field, errors) {
  */
 
 export function loadEntry(collection, slug) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
+    await delay();
     const state = getState();
     const isFetching = state.entries.getIn(['entities', `${collection}.${slug}`, 'isFetching']);
     if (isFetching) return; // bail early if already fetching
