@@ -222,10 +222,13 @@ export function changeDraftFieldValidation(field, errors) {
 export function loadEntry(collection, slug) {
   return (dispatch, getState) => {
     const state = getState();
-    const isFetching = state.entries.getIn(['entities', `${collection}.${slug}`, 'isFetching']);
-    if (isFetching) return; // bail early if already fetching
+    const entity = `${collection.get('name')}.${slug}`;
     const backend = currentBackend(state.config);
+
+    if (state.entries.getIn(['entities', entity, 'isFetching'])) return;
+
     dispatch(entryLoading(collection, slug));
+
     return backend
       .getEntry(collection, slug)
       .then(loadedEntry => {
