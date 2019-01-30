@@ -307,7 +307,7 @@ export const globalStyles = `
   /**
    * Don't show outlines if the user is utilizing mouse rather than keyboard.
    */
-  [data-whatintent="mouse"] *:focus {
+  html[data-whatintent="mouse"] *:focus {
     outline: none;
   }
 
