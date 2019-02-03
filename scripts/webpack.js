@@ -21,6 +21,11 @@ const rules = () => ({
     exclude: [/node_modules/],
     use: 'svg-inline-loader',
   }),
+  feather: () => ({
+    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+    include: [/node_modules\/feather-icons\/dist\/icons/],
+    use: 'svg-inline-loader',
+  }),
   css: () => ({
     test: /\.css$/,
     include: [/(redux-notifications|react-datetime)/],

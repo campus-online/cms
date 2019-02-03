@@ -10,6 +10,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
+    icon: 'feather-file-text'
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
@@ -46,6 +47,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
+    icon: 'feather-layers'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
@@ -53,6 +55,7 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'settings'
     label: 'Settings'
+    icon: 'feather-settings'
     delete: false # Prevent users from deleting documents in this collection
     editor:
       preview: false
@@ -86,6 +89,7 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
     label: 'Kitchen Sink'
+    icon: 'feather-folder'
     folder: '_sink'
     create: true
     fields:

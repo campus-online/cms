@@ -25,6 +25,14 @@ const IconWrapper = styled.span`
     width: 100%;
     height: 100%;
   }
+
+  svg.feather {
+    padding: 3px;
+    stroke-width: 2.2;
+    * {
+      fill: none;
+    }
+  }
 `;
 
 /**
