@@ -106,10 +106,11 @@ class Sidebar extends React.Component {
 
   renderLink = collection => {
     const collectionName = collection.get('name');
+    const iconType = collection.get('icon', 'write');
     return (
       <li key={collectionName}>
         <SidebarNavLink to={`/collections/${collectionName}`} activeClassName="sidebar-active">
-          <Icon type="write" />
+          <Icon type={iconType} />
           {collection.get('label')}
         </SidebarNavLink>
       </li>
