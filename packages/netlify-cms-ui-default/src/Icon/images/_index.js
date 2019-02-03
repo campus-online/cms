@@ -1,3 +1,11 @@
+import featherFeather from 'feather-icons/dist/icons/feather.svg';
+import featherFileText from 'feather-icons/dist/icons/file-text.svg';
+import featherFolder from 'feather-icons/dist/icons/folder.svg';
+import featherLayers from 'feather-icons/dist/icons/layers.svg';
+import featherSettings from 'feather-icons/dist/icons/settings.svg';
+import featherSliders from 'feather-icons/dist/icons/sliders.svg';
+import featherUser from 'feather-icons/dist/icons/user.svg';
+import featherUsers from 'feather-icons/dist/icons/users.svg';
 import iconAdd from './add.svg';
 import iconAddWith from './add-with.svg';
 import iconArrow from './arrow.svg';
@@ -44,6 +52,14 @@ import iconWrite from './write.svg';
 const iconix = iconAdd;
 
 const images = {
+  'feather-feather': featherFeather,
+  'feather-file-text': featherFileText,
+  'feather-folder': featherFolder,
+  'feather-layers': featherLayers,
+  'feather-settings': featherSettings,
+  'feather-sliders': featherSliders,
+  'feather-user': featherUser,
+  'feather-users': featherUsers,
   add: iconix,
   'add-with': iconAddWith,
   arrow: iconArrow,
