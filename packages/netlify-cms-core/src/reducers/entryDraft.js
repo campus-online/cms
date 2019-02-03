@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+import { isEqual } from 'lodash';
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
@@ -24,6 +25,13 @@ const initialState = Map({
   fieldsErrors: Map(),
   hasChanged: false,
 });
+
+const toJS = object => {
+  if (object && typeof object.toJS === 'function') return object.toJS();
+  return object;
+};
+
+const eq = (a, b) => a === b || isEqual(toJS(a), toJS(b));
 
 const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {
@@ -52,13 +60,23 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_DISCARD:
       return initialState;
-    case DRAFT_CHANGE_FIELD:
+    case DRAFT_CHANGE_FIELD: {
+      const { value, field, metadata = {} } = action.payload;
+      const fieldPath = ['entry', 'data', field];
+
+      // If unchanged, prevent hasChanged false-positves.
+      if (!state.getIn('hasChanged', false)) {
+        const sameValue = eq(value, state.getIn(fieldPath));
+        const sameMetadata = eq(metadata, state.getIn(['fieldsMetaData']));
+        if (sameValue && sameMetadata) return state;
+      }
+
       return state.withMutations(state => {
-        state.setIn(['entry', 'data', action.payload.field], action.payload.value);
-        state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
+        state.setIn(fieldPath, value);
+        state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
         state.set('hasChanged', true);
       });
-
+    }
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
         return state.deleteIn(['fieldsErrors', action.payload.field]);
