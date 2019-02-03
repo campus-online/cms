@@ -1,7 +1,11 @@
-import { flow } from 'lodash';
+import { flow, replace } from 'lodash/fp';
 import { markdownToSlate, slateToMarkdown } from '../index';
 
-const process = flow([markdownToSlate, slateToMarkdown]);
+const process = flow(
+  markdownToSlate,
+  slateToMarkdown,
+  replace(/[\n]+$/, ''),
+);
 
 describe('slate', () => {
   it('should not decode encoded html entities in inline code', () => {
@@ -59,7 +63,7 @@ it('should not produce invalid markdown when a styled block has trailing whitesp
       },
     ],
   };
-  expect(slateToMarkdown(slateAst)).toEqual('**foo** bar');
+  expect(slateToMarkdown(slateAst)).toEqual('**foo** bar\n');
 });
 
 it('should not produce invalid markdown when a styled block has leading whitespace', () => {
@@ -86,5 +90,5 @@ it('should not produce invalid markdown when a styled block has leading whitespa
       },
     ],
   };
-  expect(slateToMarkdown(slateAst)).toEqual('foo **bar**');
+  expect(slateToMarkdown(slateAst)).toEqual('foo **bar**\n');
 });

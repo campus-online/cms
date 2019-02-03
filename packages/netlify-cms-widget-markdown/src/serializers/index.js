@@ -140,9 +140,9 @@ export const remarkToMarkdown = obj => {
     .replace(/\r+/g, '');
 
   /**
-   * Return markdown with trailing whitespace removed.
+   * Return markdown single unix EOF new line.
    */
-  return trimEnd(markdown);
+  return trimEnd(markdown) + '\n';
 };
 
 /**
