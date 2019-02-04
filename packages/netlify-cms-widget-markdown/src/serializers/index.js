@@ -142,7 +142,7 @@ export const remarkToMarkdown = obj => {
   /**
    * Return markdown single unix EOF new line.
    */
-  return trimEnd(markdown);
+  return trimEnd(markdown) + '\n';
 };
 
 /**
@@ -214,6 +214,6 @@ export const markdownToSlate = markdown => {
  */
 export const slateToMarkdown = raw => {
   const mdast = slateToRemark(raw, { shortcodePlugins: getEditorComponents() });
-  const markdown = remarkToMarkdown(markdownToRemark(remarkToMarkdown(mdast)));
-  return markdown + '\n';
+  const markdown = remarkToMarkdown(mdast);
+  return markdown;
 };
