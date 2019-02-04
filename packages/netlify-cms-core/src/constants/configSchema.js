@@ -68,6 +68,7 @@ const getConfigSchema = () => ({
           name: { type: 'string' },
           label: { type: 'string' },
           label_singular: { type: 'string' },
+          commit_label: { type: 'string' },
           description: { type: 'string' },
           folder: { type: 'string' },
           files: {
@@ -79,6 +80,7 @@ const getConfigSchema = () => ({
                 name: { type: 'string' },
                 label: { type: 'string' },
                 label_singular: { type: 'string' },
+                commit_label: { type: 'string' },
                 description: { type: 'string' },
                 file: { type: 'string' },
                 fields: fieldsConfig,

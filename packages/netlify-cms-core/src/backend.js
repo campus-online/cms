@@ -100,7 +100,11 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
       case 'path':
         return path;
       case 'collection':
-        return collection.get('label_singular') || collection.get('label');
+        return (
+          collection.get('commit_label') ||
+          collection.get('label_singular') ||
+          collection.get('label')
+        );
       default:
         console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
         return '';
