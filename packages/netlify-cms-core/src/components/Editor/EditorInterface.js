@@ -30,7 +30,7 @@ injectGlobal`
    * React Split Pane
    */
   .Resizer.vertical {
-    width: 21px;
+    width: 11px;
     cursor: col-resize;
     position: relative;
     transition: background-color ${transitions.main};

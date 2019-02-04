@@ -4,7 +4,6 @@ import styled from 'react-emotion';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
-import { lengths } from 'netlify-cms-ui-default/src';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
@@ -18,7 +17,7 @@ const PreviewPaneFrame = styled(Frame)`
   height: 100%;
   border: none;
   background: #fff;
-  border-radius: ${lengths.borderRadius};
+  display: block;
 `;
 
 export default class PreviewPane extends React.Component {
