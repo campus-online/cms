@@ -90,6 +90,7 @@ const getConfigSchema = () => ({
           },
           slug: { type: 'string' },
           create: { type: 'boolean' },
+          reverse: { type: 'boolean' },
           editor: {
             type: 'object',
             properties: {
