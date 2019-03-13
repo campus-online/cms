@@ -147,8 +147,10 @@ export function query(namespace, collectionName, searchFields, searchTerm) {
       : backend.query(collection, searchFields, searchTerm);
 
     return queryPromise.then(
-      response =>
-        dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response)),
+      response => {
+        dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response));
+        return response;
+      },
       error => dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error)),
     );
   };
