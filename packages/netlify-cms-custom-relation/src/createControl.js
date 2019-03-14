@@ -27,7 +27,8 @@ const propTypes = {
 
 const createControl = (customParams = {}) => {
   const params = { ...defaultParams, ...customParams };
-  const { components, entryMapper, getSlug, getOptionValue } = params;
+  const { entryMapper, getSlug, getOptionValue } = params;
+  const components = { ...defaultParams.components, ...customParams.components };
 
   return class CustomRelationControl extends React.Component {
     static defaultProps = defaultProps;
